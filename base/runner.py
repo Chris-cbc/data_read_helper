@@ -53,15 +53,18 @@ class Packer(object):
 
 
 # 执行TASK中的脚本与函数
-class Executor(Packer, Reader, Writer):
+class Executor(Packer, Writer):
     def __init__(self, config):
         self.config = load_config_file(config)
         Packer.__init__(self, **self.config)
         Writer.__init__(self, **self.config)
 
     def read(self):
-        with Reader(**self.config):
-            return self.read_all()
+        cnn = Reader(**self.config)
+        with cnn:
+            curs = cnn.reader_curs
+            curs.execute(cnn.reader_query)
+            return curs.fetchall()
 
     def write(self, df):
         stack = dict()

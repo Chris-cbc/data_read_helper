@@ -12,12 +12,11 @@ class Reader(object):
         self._reader_name = self._reader_info['name']
         assert self._reader_query.lower().strip().startswith("select")
 
-    def read_all(self):
-        curs = self._reader_curs
-        curs.execute(self._reader_query)
-        return curs.fetchall()
+    def read(self):
+        raise NotImplementedError
 
-    def _connection(self, **kwargs):
+    @staticmethod
+    def _connection(**kwargs):
         kwargs["user"] = kwargs.pop("username")
         kwargs["db"] = kwargs.pop("database")
         conn = pymysql.connect(**kwargs, charset='utf8')
@@ -33,3 +32,11 @@ class Reader(object):
             self._reader_curs.close()
         if self._reader_conn:
             self._reader_conn.close()
+
+    @property
+    def reader_curs(self):
+        return self._reader_curs
+
+    @property
+    def reader_query(self):
+        return self._reader_query
