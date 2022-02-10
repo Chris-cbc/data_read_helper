@@ -1,0 +1,32 @@
+version: 1.0
+environment: dev # prd
+reader:
+  name: MysqlReader
+  account:
+    host: 192.168.54.15
+    port: 3306
+    username: root
+    password: root
+    database: test
+  sql: select * from df2feb limit 10
+
+script: [ process2tag ]
+process2tag:
+  - task: preprocess
+    in: [ data ]
+    out: df
+    execute: True
+  - task: title
+    in: [ df ]
+    out: title
+    execute: True
+  - task: company
+    in: [ df ]
+    out: company
+    execute: True
+  - task: func
+    in: [ df ]
+    out: func
+    execute: True
+
+output: [ title, company, func ]
