@@ -3,12 +3,12 @@ environment: dev # prd
 reader:
   name: MysqlReader
   account:
-    host: 192.168.54.15
+    host: localhost
     port: 3306
     username: root
     password: root
     database: test
-  sql: select * from df2feb limit 10
+  sql: select * from df4feb limit 10
 
 script: [ process2tag ]
 process2tag:
