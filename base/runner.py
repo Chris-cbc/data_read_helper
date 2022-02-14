@@ -9,8 +9,7 @@ logger = Logging().log
 
 class Writer(object):
     def __init__(self, **kwargs):
-        self._info = kwargs.get("output", list())
-        self._output = dict()
+        self._output = kwargs.get("output", list())
 
     def write(self, df):
         raise NotImplementedError
@@ -18,10 +17,6 @@ class Writer(object):
     @property
     def output(self):
         return self._output
-
-    @property
-    def info(self):
-        return self._info
 
 
 class Packer(object):
@@ -57,18 +52,16 @@ class Executor(Packer, Reader, Writer):
     def __init__(self, config):
         self.config = load_config_file(config)
         Packer.__init__(self, **self.config)
+        Reader.__init__(self, **self.config)
         Writer.__init__(self, **self.config)
 
     def read(self):
+        # 建立链接、读取query、返回数据
         with Reader(**self.config):
             return self.read_all()
 
     def write(self, df):
-        stack = dict()
-        for ot in self.info:
-            if ot in df:
-                stack.setdefault(ot, df[ot])
-        return stack
+        return {ot: df[ot] for ot in self.output if ot in df}
 
     @staticmethod
     def execute_task(df, tf):
